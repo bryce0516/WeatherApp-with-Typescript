@@ -8,6 +8,8 @@ target 'WeatherApp' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-geolocation-service', :path => '../node_modules/react-native-geolocation-service'
+
   target 'WeatherAppTests' do
     inherit! :complete
     # Pods for testing
