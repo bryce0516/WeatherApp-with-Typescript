@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, Alert } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
-import Styled from 'styled-components'
+import Styled, { ThemeConsumer } from 'styled-components'
 
 const Container = Styled.View`
   flex: 1;
@@ -13,7 +13,7 @@ const WeatherContainer = Styled(FlatList)``;
 const LoadingView = Styled.View`
   flex:1;
   justify-content: center;
-  aling-items: center;
+  align-items: center;
 `;
 
 const Loading = Styled.ActivityIndicator`
@@ -105,11 +105,31 @@ const WeatherView = ({}:Props) => {
   if(weather && temperature) {
     data.push(weatherInfo);
   }
-  
-
 
   return (  
-
+  <Container>
+    <WeatherContainer 
+      onRefresh={() => getCurrentWeather()}
+      refreshing={!isLoading}
+      data={data}
+      keyExtractor={(item, index) => {
+        return `Weather-${index}`;
+      }}
+      ListEmptyComponent={
+        <LoadingView>
+          <Loading size="large" color="#1976D2"/>
+          <LoadingLabel>Loading...</LoadingLabel>
+        </LoadingView>
+      }
+      renderItem={({item, index}) => (
+        <WeatherItemContainer>
+          <Weather>{(item as IWeather).weather}</Weather>
+          <Temperature>({(item as IWeather).temperature}C)</Temperature>
+        </WeatherItemContainer>
+      )}
+      contentContainerStyle={{flex:1}}
+    />
+  </Container>
   );
 }
  
