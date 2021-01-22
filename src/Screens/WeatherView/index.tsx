@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, Alert } from 'react-native'
-import Geolocation from 'react-native-geolocation-service'
 import Styled, { ThemeConsumer } from 'styled-components'
+import Geolocation from '@react-native-community/geolocation';
 
 const Container = Styled.View`
   flex: 1;
@@ -41,7 +41,7 @@ const Temperature = Styled.Text`
 `;
 
 
-const API_KEY = "b4f1fb519f03620253219c96e8afc3cc"
+// const API_KEY = "b4f1fb519f03620253219c96e8afc3cc"
 interface Props {
     
 }
@@ -59,16 +59,21 @@ const WeatherView = ({}:Props) => {
   })
 
   const getCurrentWeather = () => {
+    console.log('pass here')
     setWeatherInfo({
       isLoading: false
     });
     Geolocation.getCurrentPosition(
-      position => {
+      (position) => {
+        console.log('Geolocation.getCurrentPosition',position.coords.latitude,position.coords.longitude)
         const {latitude, longitude } = position.coords;
-        const address = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&APPID=${API_KEY}&units=metric`
+        const address = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
         fetch(address)
-          .then(response => response.json())
+          .then(response => 
+            response.json()
+          )
           .then(json => {
+            console.log("weather json", json)
             setWeatherInfo({
               temperature: json.main.temp,
               weather: json.weather[0].main,
@@ -82,7 +87,7 @@ const WeatherView = ({}:Props) => {
             showError('날씨정보를 가져오는데 실패하였습니다.')
           })
       },
-      error => {
+      (error) => {
         setWeatherInfo({
           isLoading: true,
         });
